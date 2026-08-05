@@ -14,9 +14,12 @@ let flashcard = [];
                             <div class="p-1">Learning:</div>
                             <div class="p-1">Graduated: </div>
                         </div>
-
-                        <div class="d-none" id="showbutton-${index}">
-                            <button type="button" class="btn btn-outline-secondary px-4" data-bs-toggle="modal" data-bs-target="#exampleModal">view</button>
+                        <div class="d-grid gap-2">
+                            <button id="study-${index}" type="button" class="btn btn-success w-100 mt-2 px-4 py-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Study Now</button>
+                            <div class="btn-group gap-2" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-outline-secondary">Add Card</button>
+                                <button type="button" class="btn btn-light">AI Generate✨</button>
+                            </div>
                         </div>
                     </div>
                 </div>
