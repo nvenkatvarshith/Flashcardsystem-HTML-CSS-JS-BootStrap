@@ -5,12 +5,19 @@ let flashcard = [];
     let str="";
     flashcard.forEach((flashcard,index) => {
         str += `
-            <div class="card py-4 text-center" id="${index}" style="width: 13.2rem;" onmouseenter="showCategoryOptions(${index})" onmouseleave="hideCategoryOptions(${index})">
-                <div class="card-body">
-                    <h4>${flashcard.category}</h4>
-                    <div class="d-none" id="showbutton-${index}">
-                        <button type="button" class="btn btn-outline-secondary px-4" data-bs-toggle="modal" data-bs-target="#exampleModal">view</button>
-                        
+            <div class="col mt-2">
+                <div class="card py-4 text-center" id="${index}">
+                    <div class="card-body">
+                        <h4>${flashcard.category} ${showCardStatus(flashcard.cardsdue)}</h4>
+                        <div class="d-flex flex-column fw-semibold">
+                            <div class="p-1">Total Cards:</div>
+                            <div class="p-1">Learning:</div>
+                            <div class="p-1">Graduated: </div>
+                        </div>
+
+                        <div class="d-none" id="showbutton-${index}">
+                            <button type="button" class="btn btn-outline-secondary px-4" data-bs-toggle="modal" data-bs-target="#exampleModal">view</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -30,13 +37,10 @@ function addNewCategory(){
     }
 }
 
-function showCategoryOptions(cardid){
-    let showButtons = document.getElementById("showbutton-"+cardid).classList;
-    if(showButtons.value.includes("d-none")){
-        showButtons.remove("d-none");
-    }
-}
-
-function hideCategoryOptions(cardid){
-    document.getElementById("showbutton-"+cardid).classList.add("d-none");
+function showCardStatus(cardsdue){
+   if(cardsdue>0){
+        return `<span class="badge text-bg-danger">${cardsdue}</span>`;
+   }else{
+        return `<span class="badge text-bg-success">No due</span>`;
+   }
 }

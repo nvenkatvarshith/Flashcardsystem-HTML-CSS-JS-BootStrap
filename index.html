@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Spaced Repetition Flashcard System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css" integrity="sha512-ApSLB1Pd3/bZN8fWB/RG9YhN/7bd9Hkf3AGaE2mPfebjrxagjuBtx2GcgdqIlJkUzwylBo61r9Xa9NmgBI0swA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary px-5">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">BrainSpaced</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li>
+                        <button type="button" class="btn me-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <i class="fa-solid fa-gear"></i>
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Settings</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <input type="text" class="w-100 py-2" name="openaikey" id="openaikey" placeholder="Configure your OpenAI Key">
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <button class="btn btn-secondary"> Study All Due</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <h1 class="text-center mt-3">AI-Powered Spaced Repetition Flashcard System</h1>
+
+    <section class="px-5 my-3">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12 px-5">
+                <div class="card w-100 py-3 text-center" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Cards Due Today</h5>
+                        <h6 class="card-subtitle my-2 text-body-secondary">10</h6>
+                        <a href="#" class="card-link">See all cards</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card w-100 py-3 text-center" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">New Cards Added</h5>
+                        <h6 class="card-subtitle my-2 text-body-secondary">10(recent AI generations)</h6>
+                        <a href="#" class="card-link">See newely added cards</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card w-100 py-3 text-center" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Retention Rate</h5>
+                        <h6 class="card-subtitle my-2 text-body-secondary">88%</h6>
+                        <a href="#" class="card-link">See newely added cards</a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+    <hr class="border border-secondary border-1 opacity-20">
+    <h2 class="text-center mt-3 text-uppercase">Categories</h2>
+    <section class="px-5 mt-4">
+        <div id="categories" class="row row-cols-3">
+            <div class="col mt-2">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-outline-secondary w-100 h-100" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        +
+                    Add Category
+                </button>
+        
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Category</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"</button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div>
+                                        <input type="text" name="Category" id="newcategory" class="w-100 py-2" placeholder="Enter the name of the category">
+                                        <p id="error-msg" class="text-danger d-hide"></p>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="addNewCategory()">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="./index.js"></script>
+</body>
+</html>
