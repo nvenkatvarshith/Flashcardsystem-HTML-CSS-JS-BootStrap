@@ -59,6 +59,11 @@ let studydeck = [];
                                                 <form>
                                                     <input type="text" class="w-100 py-2 rounded-3" name="front" id="source${flashcard.categoryname}" placeholder="Enter topic of card to be added">
                                                 </form>
+                                                <div class="d-flex justify-content-center visually-hidden" id="spinner${flashcard.categoryname}">
+                                                    <div class="spinner-border" role="status">
+                                                        <span class="visually-hidden">Loading...</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -81,10 +86,15 @@ let studydeck = [];
 
 function addNewCategory(){
     const category = document.getElementById("newcategory");
+    let newCategory = {
+        categoryname: category.value.toUpperCase(),
+        flashcards: [],
+        id: studydeck.length + 1
+    };
     if(category.value == ''){
         document.getElementById("error-msg").innerHTML = "Please enter the value";
     }else{
-        studydeck.push({category: category.value.toUpperCase()});
+        studydeck.push(newCategory);
         localStorage.setItem("studydeck", JSON.stringify(studydeck));
         window.location.href = "/";
     }
@@ -241,6 +251,7 @@ function updateTotalDueToday(){
 
 function saveOpenAIKey(){
     apiKey = document.getElementById("openaikey").value;
+    document.getElementById("savedmsg").innerHTML = "API Key saved successfully, do not refresh the page!!";
 }
 
 
@@ -248,6 +259,7 @@ async function getAIResponse(categoryname) {
     const endpoint = 'https://api.openai.com/v1/chat/completions';
     let sourceText = document.getElementById("source"+categoryname).value;
     const todayISO = new Date().toISOString();
+    document.getElementById("spinner"+categoryname).classList.remove("visually-hidden");
     
     const systemPrompt = `You are an expert educational assistant designed to generate spaced repetition flashcards. 
             Analyze the user's provided text and extract the most important facts, concepts, and definitions.
@@ -333,6 +345,7 @@ async function getAIResponse(categoryname) {
             }
         });
         localStorage.setItem("studydeck", JSON.stringify(studydeck));
+        document.getElementById("spinner"+categoryname).classList.add("visually-hidden");
         window.location.href = "/";
 
 
