@@ -73,30 +73,37 @@ function showCardStatus(cardsdue){
 }
 
 function showDeckCards(selectedCategory){
-    console.log(selectedCategory);
     studydeck.forEach((studydeckcategory,index) => {
         if(studydeckcategory.categoryname === selectedCategory){
             document.getElementById("show-categories").classList.add("d-none");
-            populateFlashCards(selectedCategory,index);
+            populateFlashCards(studydeckcategory);
             document.getElementById("flashcards").classList.remove("d-none");
         }
     })
 }
 
-function populateFlashCards(selectedCategory,index){
+function populateFlashCards(studydeckcategory){
     let str = "";
-    console.log(studydeck[index].flashcards);
-    studydeck[index].flashcards.forEach((flashcard) => {
+    let todaysflashcards = studydeckcategory.flashcards.filter((flashcard) => {
+        return isToday(flashcard.nextReviewDate);
+    });
+    todaysflashcards.forEach((flashcard) => {
         str += `
             <div class="card col" style="width: 18rem;">
                 <div class="card-body">
-                    <h5 class="card-title">${selectedCategory}</h5>
+                    <h5 class="card-title">${studydeckcategory.categoryname}</h5>
                     ${` <div id="front${flashcard.id}">
                             <h6 class="card-subtitle mb-2 text-body-secondary">${flashcard.front}</h6>
                             <button type="button" class="btn btn-outline-secondary" onclick="revealAnswer('${flashcard.id}')">Reveal Answer</button>
                         </div>
                         <div id="back${flashcard.id}" class="d-none mt-3">
                             <h6 class="card-subtitle mb-2 text-body-secondary">Answer: ${flashcard.back}</h6>
+                            <div class = "row row-cols-auto">
+                                <button type="button" class="btn btn-outline-warning" onclick="reviewAgain('${flashcard.id}')">Again</button>
+                                <button type="button" class="btn btn-outline-danger" onclick="updateReviewDate('${studydeckcategory.categoryname}','${flashcard.id}','Hard')">Hard</button>
+                                <button type="button" class="btn btn-outline-info" onclick="updateReviewDate('${studydeckcategory.categoryname}','${flashcard.id}','Good')">Good</button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="updateReviewDate('${studydeckcategory.categoryname}','${flashcard.id}','Easy')">Easy</button>
+                            </div>
                         </div>
                     `} 
                 </div>
@@ -109,6 +116,11 @@ function populateFlashCards(selectedCategory,index){
 function revealAnswer(flashcardid){
     document.getElementById('back'+flashcardid).classList.remove('d-none');
     document.getElementById('front'+flashcardid).classList.add('d-none');
+}
+
+function reviewAgain(flashcardid){
+    document.getElementById('back'+flashcardid).classList.add('d-none');
+    document.getElementById('front'+flashcardid).classList.remove('d-none');
 }
 
 function addCardToCategory(categoryname){
@@ -130,3 +142,43 @@ function addCardToCategory(categoryname){
     localStorage.setItem("studydeck", JSON.stringify(studydeck));
     window.location.href = "/";
 }
+
+function updateReviewDate(categoryname, flashcardid, rating){
+    let days = 0;
+    switch(rating){
+        case 'Hard' : days = 2;
+            break;
+        case 'Good' : days = 4;
+            break;
+        case 'Easy' : days = 7;
+            break;
+    }
+    studydeck.forEach((deck) => {
+        if(deck.categoryname == categoryname) {
+            deck.flashcards.forEach((flashcard) => {
+                if(flashcard.id == flashcardid){
+                    flashcard.interval = days;
+                    flashcard.nextReviewDate = addDaysToISO(flashcard.nextReviewDate,days);
+                }
+            });
+        }
+    });
+    localStorage.setItem("studydeck", JSON.stringify(studydeck));
+}
+
+const addDaysToISO = (isoString, days) => {
+  const d = new Date(isoString);
+  d.setDate(d.getDate() + days);
+  return d.toISOString();
+};
+
+const isToday = (dateString) => {
+  const date = new Date(dateString);
+  const today = new Date();
+
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+};
