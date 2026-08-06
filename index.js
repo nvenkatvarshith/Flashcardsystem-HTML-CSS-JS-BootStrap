@@ -8,20 +8,19 @@ let studydeck = [];
             <div class="col mt-2">
                 <div class="card py-4 text-center" id="${index}">
                     <div class="card-body">
-                        <h4>${flashcard.categoryname} ${showCardStatus(flashcard.cardsdue)}</h4>
+                        <h4>${flashcard.categoryname} ${showCardStatus(todaysCardCount(flashcard))}</h4>
                         <div class="d-flex flex-column fw-semibold">
-                            <div class="p-1">Total Cards:</div>
-                            <div class="p-1">Learning:</div>
-                            <div class="p-1">Graduated: </div>
+                            <div class="p-1">Total Cards: ${flashcard.flashcards.length}</div>
+                            <div class="p-1">Learning: ${todaysCardCount(flashcard)}</div>
                         </div>
                         <div class="d-grid gap-2">
                             <button id="flashcard-${index}" type="button" class="btn btn-success w-100 mt-2 px-4 py-2" onclick = "showDeckCards('${flashcard.categoryname}')">Study Now</button>
                             <div class="btn-group gap-2" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal${flashcard.id}">
                                     Add Card
                                 </button>
 
-                                <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="exampleModal${flashcard.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -51,6 +50,7 @@ let studydeck = [];
         `
     });
     document.getElementById("categories").innerHTML += str;
+    updateTotalDueToday();
 })();
 
 function addNewCategory(){
@@ -66,7 +66,7 @@ function addNewCategory(){
 
 function showCardStatus(cardsdue){
    if(cardsdue>0){
-        return `<span class="badge text-bg-danger">${cardsdue}</span>`;
+        return `<span class="badge text-bg-danger">${cardsdue} due</span>`;
    }else{
         return `<span class="badge text-bg-success">No due</span>`;
    }
@@ -131,7 +131,7 @@ function addCardToCategory(categoryname){
         front,
         back,
         interval,
-        nextReviewDate: new Date().toISOString
+        nextReviewDate: new Date().toISOString()
     };
     studydeck.forEach((deck) => {
         if(deck.categoryname == categoryname) {
@@ -166,13 +166,14 @@ function updateReviewDate(categoryname, flashcardid, rating){
     localStorage.setItem("studydeck", JSON.stringify(studydeck));
 }
 
+
 const addDaysToISO = (isoString, days) => {
   const d = new Date(isoString);
   d.setDate(d.getDate() + days);
   return d.toISOString();
 };
 
-const isToday = (dateString) => {
+function isToday(dateString){
   const date = new Date(dateString);
   const today = new Date();
 
@@ -181,4 +182,25 @@ const isToday = (dateString) => {
     date.getMonth() === today.getMonth() &&
     date.getFullYear() === today.getFullYear()
   );
-};
+}
+
+function todaysCardCount(flashcard){
+    let todaysflashcards = flashcard.flashcards.filter((flashcard) => {
+        return isToday(flashcard.nextReviewDate);
+    });
+    return todaysflashcards.length;
+}
+
+function goToHomePage(){
+    window.location.href = "/";
+}
+
+function updateTotalDueToday(){
+    let count = 0; 
+    studydeck.forEach((studydeckcategory) => {
+        count += studydeckcategory.flashcards.filter((flashcard) => {
+            return isToday(flashcard.nextReviewDate);
+        }).length;
+    })
+    document.getElementById("totaldue-cards").innerHTML = count;
+}
